@@ -12,7 +12,6 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -42,7 +41,8 @@ jobs:
         if: runner.os == 'Linux'
         continue-on-error: true
         run: ./mvnw -V -B --no-transfer-progress -e -DtrimStackTrace=false -Dmaven.test.failure.ignore=true -Dsurefire.rerunFailingTestsCount=1 verify
-
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Inspect environment (Windows)
         if: runner.os == 'Windows'
         run: set java
@@ -56,7 +56,7 @@ jobs:
       - name: Inspect environment (MacOS)
         if: runner.os == 'macOS'
         run: env | grep '^JAVA'
-
+    
       - name: Build with Maven (MacOS)
         timeout-minutes: 60
         if: runner.os == 'macOS'
@@ -81,3 +81,4 @@ jobs:
         with:
           name: test-reports-${{ matrix.os }}
           path: '**/*-reports'
+          
